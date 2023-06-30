@@ -22,43 +22,47 @@ const articleSchema = new mongoose.Schema({
 
   const Article = mongoose.model("Article", articleSchema);
 
-//   const article1 = new Article({title : "newTitke", content:"new content"});
-//   article1.save();
 
-app.get("/articles",function(req,res){
+app.route("/articles")
 
-    Article.find({})
-    .then((rs)=>
-        res.send(rs)
-    )
-    .catch((err)=> 
-        res.send(err));
+    .get(function(req,res){
+
+        Article.find({})
+        .then((rs)=>
+            res.send(rs)
+        )
+        .catch((err)=> 
+            res.send(err));
+        
+    })
+
+    .post(function(req,res){
+
+        const reqtitle = req.body.title;
+        const reqcontent = req.body.content;
+        console.log(reqtitle);
+        console.log(reqcontent);
     
-});
+        const art = new Article({ title:reqtitle , content:reqcontent}) ;
+        Article.insertMany(art)
+        .then((rs)=>res.send(rs))
+        .catch((err)=>res.send(err));
+    })
+    
+    .delete(function(req,res){
 
-app.post("/articles",function(req,res){
+        Article.deleteMany({})
+      .then((rs) => {
+        res.send("All documents deleted successfully");
+      })
+      .catch((error) => {
+        res.send("Error deleting documents:", error);
+      });
+    });
 
-    const reqtitle = req.body.title;
-    const reqcontent = req.body.content;
-    console.log(reqtitle);
-    console.log(reqcontent);
 
-    const art = new Article({ title:reqtitle , content:reqcontent}) ;
-    Article.insertMany(art)
-    .then((rs)=>res.send(rs))
-    .catch((err)=>res.send(err));
-});
 
-app.delete("/articles",function(req,res){
 
-    Article.deleteMany({})
-  .then((rs) => {
-    res.send("All documents deleted successfully");
-  })
-  .catch((error) => {
-    res.send("Error deleting documents:", error);
-  });
-})
 
 
 
